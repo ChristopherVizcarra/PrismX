@@ -1,5 +1,6 @@
 from Tkinter import *
 import tkFileDialog
+import Syntax
 
 class GUI():
 	def __init__(self):
@@ -19,6 +20,11 @@ class GUI():
 		filemenu.add_separator()
 		filemenu.add_command(label="Exit", command=self.exit)
 		menubar.add_cascade(label="File", menu=filemenu)
+
+		compilemenu = Menu(menubar, tearoff=0)
+		compilemenu.add_command(label="Compile", command=self.check)
+		compilemenu.add_command(label="Compile and Run", command=self.run)
+		menubar.add_cascade(label="Compile", menu=compilemenu)
 
 		self.root.config(menu = menubar)
 
@@ -59,5 +65,13 @@ class GUI():
 			self.root.title(name)
 		except:
 			pass
+
+	def check(self):
+		temp = Syntax.syntax()
+		temp.set_input(self.text.get(1.0, END))
+		temp.algorithm()
+
+	def run(self):
+		pass
 
 GUI()

@@ -11,6 +11,8 @@ class lexical_analysis():
 		self.lexLen = 0
 		self.token = 0
 		self.nextToken = 0
+		self.text = []
+		self.tokens = []
 
 		self.LETTER = 0
 		self.DIGIT = 1
@@ -52,14 +54,17 @@ class lexical_analysis():
 		self.AMPERSAND = 51			#	&
 		self.EOF = 99
 
-		self.f = open("input.txt", "r")
+	def set_text(self, temp):
+		self.text = temp
 
 	def main(self):
 		self.getChar()
 
-		self.lex()
-		while (self.nextToken != self.EOF):
-			self.lex()
+		self.tokens.append(self.lex())
+		while(self.nextToken != self.EOF):
+			self.tokens.append(self.lex())
+
+		return self.tokens
 
 	def lookup(self, ch):
 		if (ch == "("):
@@ -194,18 +199,20 @@ class lexical_analysis():
 		self.lexeme += self.nextchar
 
 	def getChar(self):
-		self.nextchar = self.f.read(1)
-		if (self.nextchar):
-			if (self.nextchar.isalpha()):
-				self.charClass = self.LETTER
+		try:
+			self.nextchar = self.text.pop(0)
+			if (self.nextchar):
+				if (self.nextchar.isalpha()):
+					self.charClass = self.LETTER
 
-			elif (self.nextchar.isdigit()):
-				self.charClass = self.DIGIT
+				elif (self.nextchar.isdigit()):
+					self.charClass = self.DIGIT
 
-			else:
-				self.charClass = self.UNKNOWN
-		else:
+				else:
+					self.charClass = self.UNKNOWN
+		except:
 			self.charClass = self.EOF
+			self.nextchar = ""
 
 	def getNonBlank(self):
 		while (self.nextchar == " "):
@@ -248,6 +255,4 @@ class lexical_analysis():
 		print "%s%s%s%s" %("Next token is ", str(self.nextToken), ", Next lexeme is ", self.lexeme)
 
 		self.lexeme = ""
-
-x = lexical_analysis()
-x.main()
+		return self.nextToken
