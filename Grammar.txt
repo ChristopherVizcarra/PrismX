@@ -1,0 +1,63 @@
+Data Types Grammar
+------------------
+
+A. Declaration
+# boolean, char, int, long, float, double
+# Example: boolean topher [100];
+
+<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+
+<arraySize>				->	MUST BE POSITIVE. SAAN TO?
+
+<dataType>				-> boolean | char | int | long | float | double
+
+B. String Operations
+# split, strip, concatenate, and copy
+# Example: topher = topher.split("ab");				# topher.split("ab") returns a jagged 2D-array [LIST]
+# 		   topher = topher.strip("ex");
+#		   topher = topher.concat(var2);
+#		   topher = topher.copy(var2);
+
+<stringOp>				->	identifier.<operation>(string);
+<operation>				->	split | strip | concat | copy
+
+<assignment>			-> <variable> = <operation>
+<operation>				-> <stringOp> | INSERT OTHER OPERATIONS HERE
+
+C. Other Data Types
+# May options kasi sila between using static (array -> pweds rect) or maglilist ( dynamic to so dito na rin yung jagged)
+# Exa
+
+???? <variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+
+<listVarDec>			->	<list>; 
+<list>					->	[ ( (Epsilon) | ( <listElem>)]
+<listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
+
+# Would we allow unions?
+
+???? <variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+
+<unionVarDec>			->	 <union>;
+<union>					->	{(unionElement)}
+<unionElement>			->	( identifier=><validListUnionValues> (,<unionElement>| Epsilon ) )
+
+<validListUnionValues>		->  ( int | long | float | double | char | boolean | string | <listDec> )
+
+<tupleVar>				->	<tuple>;
+<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> )
+<tupleElementSingle>	-> <validListUnionValues>,
+<tupleElementMore>		-> <validListUnionValues> (,<tupleElementMore>| Epsilon )
+
+# Typecasting pa...
+# Possible typecasting:
+# int -> float
+# float -> int
+
+<typeCast1> = (int)identifier;
+<typeCast2> = (float)identifier;
+... Since data types lang ito, kailangan pa ito iinclude sa assignment since pwede magtypecast doon.
+
+
+
+# NO POINTERS BEH
