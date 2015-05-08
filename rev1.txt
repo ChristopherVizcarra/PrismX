@@ -1,0 +1,65 @@
+<statement>				-> <declaration> | <operation> | <condition> | <loop>
+
+<declaration>			-> <variableDeclaration> |  
+
+<variableDeclaration> 	->	( <dataType> ' ' identifier ( ' ' [ <arraySize> ] | Epsilon) ( = <operation> | Epsilon ) | <listDec> ) ;
+<arraySize>				->	MUST BE POSITIVE. SAAN TO?
+
+<dataType>				->	boolean | char | int | long | float | double
+
+<stringOpStatement>		->	identifier.<stringOp>(string);
+<stringOp>				->	split | strip | concat | copy
+
+<variableDeclaration> 	->	<dataType> ' ' identifier ' ' [<arraySize>] ( = <operation> | Epsilon );
+
+<listDec>				-> identifier = <listDec> ;
+<list>					->	[ ( (Epsilon) | ( <listElem>)]
+<listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
+
+<unionDec>				-> 	identifier = <union>;
+<union>					->	{(unionElement)}
+<unionElement>			->	( identifier=><validListUnionValues> (,<unionElement>| Epsilon ) )
+<validListUnionValues>	->  ( int | long | float | double | char | boolean | string | <listDec> )
+
+
+<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> );
+<tupleElementSingle>	-> <validListUnionValues>,
+<tupleElementMore>		-> <validListUnionValues> ( , <tupleElementMore> | Epsilon )
+
+<typeCastToInt> 		-> (int) identifier;
+<typeCastToFloat> 		-> (float) identifier;
+
+<WhileLoop> 			-> while ( <Condition> ) <Body>
+
+<Body>					-> ( <statement>; ( <statementMore> | Epsilon ))
+<statementMore>			-> <statement>; (<statementMore> | Epsilon)
+
+<ForLoop> 				-> for ( <Assignment> ; <Condition> ; <Iterator> ) <Body>
+
+<DoWhileLoop> 			-> do: <Body> while ( <Condition> );
+
+<IfThenElse> 			-> if ( <Condition> ): <Body> [ elif ( <Condition> ): <Body>  [else: <Body>] ] 
+
+<Condition> 			-> <Operand> <RelationalExpression> <Operand> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
+
+<Operand> 				-> <Variable> | <Number>
+
+<Compound> 				-> AND | OR
+<Iterator> 				-> <Assignment> | ++ | -- | Epsilon
+
+<Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>; | Epsilon
+# <operation>			->	<stringOp> | INSERT OTHER OPERATIONS HERE
+
+
+<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> ) +
+<ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
+<AssignmentOperator> 	-> = | += | -= | *= | /= | %=
+<RelationOperator>		-> == | >= | <= | > | < | !=
+
+
+Subprograms
+-------------------
+<Definition> 			-> <DataType> <Function>
+<Function> 				-> <FunctionName> ( <Parameters> ) 
+<Parameters> 			-> Epsilon | <Parameters>,<Parameters> | <Parameter>
+<Parameter> 			-> <DataType> <Variable>

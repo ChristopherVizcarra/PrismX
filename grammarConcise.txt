@@ -1,34 +1,41 @@
 Data Types Grammar
 ------------------
-<statement>
+<statement>				-> 
 
-<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( = <operation> | Epsilon ) ;
 <arraySize>				->	MUST BE POSITIVE. SAAN TO?
-<dataType>				-> boolean | char | int | long | float | double
-<stringOp>				->	identifier.<operation>(string);
-<operation>				->	split | strip | concat | copy
-<assignment>			-> <variable> = <operation>
-<operation>				-> <stringOp> | INSERT OTHER OPERATIONS HERE
-<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
-<listVarDec>			->	<list>; 
-<list>					->	[ ( (Epsilon) | ( <listElem>)]
+
+<dataType>				-> 	boolean | char | int | long | float | double
+
+<stringOpStatement>		->	identifier.<stringOp>(string);
+<stringOp>				->	split | strip | concat | copy
+
+# Match with baba			
+# <assignment>			-> 	identifier = <operation>
+
+<operation>				-> 	<stringOp> | INSERT OTHER OPERATIONS HERE
+<variableDeclaration> 	->	<dataType> ' ' identifier ' ' [<arraySize>] ( =<operation> | Epsilon );
+
+<list>					->	[ ( (Epsilon) | ( <listElem>)];
 <listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
 <variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
-<unionVarDec>			->	 <union>;
-<union>					->	{(unionElement)}
+
+<union>					->	{ <unionElement> };
 <unionElement>			->	( identifier=><validListUnionValues> (,<unionElement>| Epsilon ) )
-<validListUnionValues>		->  ( int | long | float | double | char | boolean | string | <listDec> )
-<tupleVar>				->	<tuple>;
-<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> )
+<validListUnionValues>	->  ( int | long | float | double | char | boolean | string | <listDec> )
+
+
+<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> );
 <tupleElementSingle>	-> <validListUnionValues>,
 <tupleElementMore>		-> <validListUnionValues> (,<tupleElementMore>| Epsilon )
-<typeCastToInt> 		-> (int)identifier;
-<typeCastToInt> 		-> (float)identifier;
+
+<typeCastToInt> 		-> (int) identifier;
+<typeCastToFloat> 		-> (float) identifier;
 
 Expression and Assignment Statement, Statement Level Control Structures
 -------------------
 
-<WhileLoop> 			-> while(<Condition>)<Body>
+<WhileLoop> 			-> while ( <Condition> ) <Body>
 <ForLoop> 				-> for(<Assignment>;<Condition>;<Iterator>)<Body>
 <DoWhileLoop> 			-> do<Body><WhileLoop>
 <IfThenElse> 			-> if(<Condition>)<Body>[elif(<Condition>)<Body>][else(<Condition>)<Body>]
@@ -36,8 +43,8 @@ Expression and Assignment Statement, Statement Level Control Structures
 <Operand> 				-> <Variable> | <Number>
 <Compound> 				-> AND | OR
 <Iterator> 				-> <Assignment> | ++ | -- | Epsilon
-<Assignment> 			-> <Variable><AssignmentOperator><ArithmeticExpression> | Epsilon
-<ArithmeticExpression> 	-> (< Operand ><ArithmeticOperator>)+
+<Assignment> 			-> <Variable> <AssignmentOperator> <ArithmeticExpression> | Epsilon
+<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> ) +
 <ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
 <AssignmentOperator> 	-> = | += | -= | *= | /= | %=
 
@@ -47,4 +54,7 @@ Subprograms
 <Function> 				-> <FunctionName>(<Parameters>)
 <Parameters> 			-> Epsilon | <Parameters>,<Parameters> | <Parameter>
 <Parameter> 			-> <DataType> <Variable>
-<DataType> 				-> “int” | “float” | “bool” | “char” | “long” | ”double” | Epsilon
+
+
+
+# <DataType> 				-> int | float | bool | char | long | double | Epsilon 	//DECLARED ALREADY ON TOP
