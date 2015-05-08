@@ -20,13 +20,38 @@ class syntax():
 		self.setup()
 
 		print self.input
-		#temp = 0
-		#while 1:
-		#	temp = self.input.pop(0)
-		#	temp1 = self.parse[-1:]
+		temp = 0
+		while 1:
+			temp = self.input.pop(0)
+			temp1 = self.parse[-1:]
 
-			#if temp == 
-			
+			if temp == 11:
+				temp2 = self.table[temp1][0]
+			elif temp == 21:
+				temp2 = self.table[temp1][1]
+			elif temp == 23:
+				temp2 = self.table[temp1][2]
+			elif temp == 25:
+				temp2 = self.table[temp1][3]
+			elif temp == 26:
+				temp2 = self.table[temp1][4]
+			elif temp == 27:
+				temp2 = self.table[temp1][5]
+			else:
+				print "Error"
+				print temp, temp1
+				exit(1)
+
+			if temp2 >= 0:
+				self.parse.append(temp)
+				self.parse.append(temp2)
+				
+
+			else:
+				print "Error"
+				print temp, temp1, temp2
+				exit(1)
+
 	def setup(self):
 		temp = [5, None, None, 4, None, None, 1, 2, 3]
 		self.table.append(temp)
