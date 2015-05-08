@@ -1,6 +1,6 @@
 <statement>				-> <declaration> | <operation> | <condition> | <loop> | <return>
 
-<declaration>			-> <variableDeclaration> |  
+<declaration>			-> <variableDeclaration> | <listDec> | <unionDec> | <tupleDec>
 
 <variableDeclaration> 	->	( <dataType> ' ' identifier ( ' ' [ <arraySize> ] | Epsilon) ( = <operation> | Epsilon ) | <listDec> ) ;
 <arraySize>				->	MUST BE POSITIVE. SAAN TO?
@@ -16,15 +16,21 @@
 <list>					->	[ ( (Epsilon) | ( <listElem>)]
 <listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
 
+<listEval>				->	identifier[constant];
+
 <unionDec>				-> 	identifier = <union>;
 <union>					->	{(unionElement)}
-<unionElement>			->	( identifier=><validListUnionValues> (,<unionElement>| Epsilon ) )
+<unionElement>			->	( string=><validListUnionValues> (,<unionElement>| Epsilon ) )
 <validListUnionValues>	->  ( int | long | float | double | char | boolean | string | <listDec> )
 
+<unionKeys>				->	identifier.keys();
+<unionStatement>		->	<unionEval>;
+<unionEval> 			->  identifier -> string
 
-<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> );
-<tupleElementSingle>	-> <validListUnionValues>,
+<tupleDec>				-> identifier = <tuple>;
+<tuple>					-> ( <validListUnionValues>, | <tupleElementMore> )
 <tupleElementMore>		-> <validListUnionValues> ( , <tupleElementMore> | Epsilon )
+<tupleEval>				-> identifier[constant];
 
 <typeCastToInt> 		-> (int) identifier;
 <typeCastToFloat> 		-> (float) identifier;
@@ -43,13 +49,15 @@
 
 <Condition> 			-> <RelationalExpression> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
 
-<Operand> 				-> identifier | constant
+<Operand> 				-> identifier | constant | boolean
 
 <Compound> 				-> AND | OR
+
 <Iterator> 				-> <Assignment> | ++ | -- | Epsilon
 
 <Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>; | Epsilon
-# <operation>			->	<stringOp> | INSERT OTHER OPERATIONS HERE
+
+<operation>				->	<stringOpStatement> | <Assignment>
 
 <RelationExpression>	-> <Operand> <RelationalOperator> <Operand> 
 
@@ -59,12 +67,9 @@
 <AssignmentOperator> 	-> = | += | -= | *= | /= | %=
 <RelationOperator>		-> == | >= | <= | > | < | !=
 
-Subprograms
--------------------
 <Definition> 			-> <DataType> <Function> <Body>
 <Function> 				-> <FunctionName> ( <Parameters> ) 
 <Parameters> 			-> Epsilon | <Parameter>, <Parameters> | <Parameter>
 <Parameter> 			-> <DataType> <Variable>
 
-<return>		-> return ' ' (constant | identifier | <operation>)
-
+<return>				-> return ' ' (constant | identifier | <operation>)
