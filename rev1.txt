@@ -1,0 +1,75 @@
+<statement>				-> <declaration> | <operation> | <condition> | <loop> | <return>
+
+<declaration>			-> <variableDeclaration> | <listDec> | <unionDec> | <tupleDec>
+
+<variableDeclaration> 	->	( <dataType> ' ' identifier ( ' ' [ <arraySize> ] | Epsilon) ( = <operation> | Epsilon ) | <listDec> ) ;
+<arraySize>				->	MUST BE POSITIVE. SAAN TO?
+
+<dataType>				->	boolean | char | int | long | float | double
+
+<stringOpStatement>		->	identifier.<stringOp>(string);
+<stringOp>				->	split | strip | concat | copy
+
+<variableDeclaration> 	->	<dataType> ' ' identifier ' ' [<arraySize>] ( = <operation> | Epsilon );
+
+<listDec>				-> identifier = <listDec> ;
+<list>					->	[ ( (Epsilon) | ( <listElem>)]
+<listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
+
+<listEval>				->	identifier[constant];
+
+<unionDec>				-> 	identifier = <union>;
+<union>					->	{(unionElement)}
+<unionElement>			->	( string=><validListUnionValues> (,<unionElement>| Epsilon ) )
+<validListUnionValues>	->  ( int | long | float | double | char | boolean | string | <listDec> )
+
+<unionKeys>				->	identifier.keys();
+<unionStatement>		->	<unionEval>;
+<unionEval> 			->  identifier -> string
+
+<tupleDec>				-> identifier = <tuple>;
+<tuple>					-> ( <validListUnionValues>, | <tupleElementMore> )
+<tupleElementMore>		-> <validListUnionValues> ( , <tupleElementMore> | Epsilon )
+<tupleEval>				-> identifier[constant];
+
+<typeCastToInt> 		-> (int) identifier;
+<typeCastToFloat> 		-> (float) identifier;
+
+<WhileLoop> 			-> while ( <Condition> ) <Body>
+
+<Body>					-> ( <statement>; ( <statementMore> | Epsilon ))
+<statementMore>			-> <statement>; (<statementMore> | Epsilon)
+
+<ForLoop> 				-> for ( <Assignment> ; <Condition> ; <Iterator> ) <Body>
+
+<DoWhileLoop> 			-> do: <Body> while ( <Condition> );
+
+<IfThenElse> 			-> if ( <Condition> ): <Body> [ <elifClause> [else: <Body>] ] 
+<elifClause>			->(elif ( <Condition> ): <Body> ( <elifClause> | Epsilon ) )
+
+<Condition> 			-> <RelationalExpression> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
+
+<Operand> 				-> identifier | constant | boolean
+
+<Compound> 				-> AND | OR
+
+<Iterator> 				-> <Assignment> | ++ | -- | Epsilon
+
+<Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>; | Epsilon
+
+<operation>				->	<stringOpStatement> | <Assignment>
+
+<RelationExpression>	-> <Operand> <RelationalOperator> <Operand> 
+
+<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> <Operand> )
+
+<ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
+<AssignmentOperator> 	-> = | += | -= | *= | /= | %=
+<RelationOperator>		-> == | >= | <= | > | < | !=
+
+<Definition> 			-> <DataType> <Function> <Body>
+<Function> 				-> <FunctionName> ( <Parameters> ) 
+<Parameters> 			-> Epsilon | <Parameter>, <Parameters> | <Parameter>
+<Parameter> 			-> <DataType> <Variable>
+
+<return>				-> return ' ' (constant | identifier | <operation>)
