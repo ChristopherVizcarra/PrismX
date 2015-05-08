@@ -1,0 +1,50 @@
+Data Types Grammar
+------------------
+<statement>
+
+<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+<arraySize>				->	MUST BE POSITIVE. SAAN TO?
+<dataType>				-> boolean | char | int | long | float | double
+<stringOp>				->	identifier.<operation>(string);
+<operation>				->	split | strip | concat | copy
+<assignment>			-> <variable> = <operation>
+<operation>				-> <stringOp> | INSERT OTHER OPERATIONS HERE
+<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+<listVarDec>			->	<list>; 
+<list>					->	[ ( (Epsilon) | ( <listElem>)]
+<listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
+<variableDeclaration> 	->	<dataType>" "identifier" "[<arraySize>] ( =<operation> | Epsilon );
+<unionVarDec>			->	 <union>;
+<union>					->	{(unionElement)}
+<unionElement>			->	( identifier=><validListUnionValues> (,<unionElement>| Epsilon ) )
+<validListUnionValues>		->  ( int | long | float | double | char | boolean | string | <listDec> )
+<tupleVar>				->	<tuple>;
+<tuple>					-> ( <tupleElementSingle> | <tupleElementMore> )
+<tupleElementSingle>	-> <validListUnionValues>,
+<tupleElementMore>		-> <validListUnionValues> (,<tupleElementMore>| Epsilon )
+<typeCastToInt> 		-> (int)identifier;
+<typeCastToInt> 		-> (float)identifier;
+
+Expression and Assignment Statement, Statement Level Control Structures
+-------------------
+
+<WhileLoop> 			-> while(<Condition>)<Body>
+<ForLoop> 				-> for(<Assignment>;<Condition>;<Iterator>)<Body>
+<DoWhileLoop> 			-> do<Body><WhileLoop>
+<IfThenElse> 			-> if(<Condition>)<Body>[elif(<Condition>)<Body>][else(<Condition>)<Body>]
+<Condition> 			-> <Operand><RelationalExpression><Operand> | <Condition><Compound><Condition> | <Negation><Condition> | Epsilon
+<Operand> 				-> <Variable> | <Number>
+<Compound> 				-> AND | OR
+<Iterator> 				-> <Assignment> | ++ | -- | Epsilon
+<Assignment> 			-> <Variable><AssignmentOperator><ArithmeticExpression> | Epsilon
+<ArithmeticExpression> 	-> (< Operand ><ArithmeticOperator>)+
+<ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
+<AssignmentOperator> 	-> = | += | -= | *= | /= | %=
+
+Subprograms
+-------------------
+<Definition> 			-> <DataType> <Function>
+<Function> 				-> <FunctionName>(<Parameters>)
+<Parameters> 			-> Epsilon | <Parameters>,<Parameters> | <Parameter>
+<Parameter> 			-> <DataType> <Variable>
+<DataType> 				-> “int” | “float” | “bool” | “char” | “long” | ”double” | Epsilon
