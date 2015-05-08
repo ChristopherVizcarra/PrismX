@@ -1,4 +1,4 @@
-<statement>				-> <declaration> | <operation> | <condition> | <loop>
+<statement>				-> <declaration> | <operation> | <condition> | <loop> | <return>
 
 <declaration>			-> <variableDeclaration> |  
 
@@ -38,11 +38,12 @@
 
 <DoWhileLoop> 			-> do: <Body> while ( <Condition> );
 
-<IfThenElse> 			-> if ( <Condition> ): <Body> [ elif ( <Condition> ): <Body>  [else: <Body>] ] 
+<IfThenElse> 			-> if ( <Condition> ): <Body> [ <elifClause> [else: <Body>] ] 
+<elifClause>			->(elif ( <Condition> ): <Body> ( <elifClause> | Epsilon ) )
 
-<Condition> 			-> <Operand> <RelationalExpression> <Operand> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
+<Condition> 			-> <RelationalExpression> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
 
-<Operand> 				-> <Variable> | <Number>
+<Operand> 				-> identifier | constant
 
 <Compound> 				-> AND | OR
 <Iterator> 				-> <Assignment> | ++ | -- | Epsilon
@@ -50,16 +51,20 @@
 <Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>; | Epsilon
 # <operation>			->	<stringOp> | INSERT OTHER OPERATIONS HERE
 
+<RelationExpression>	-> <Operand> <RelationalOperator> <Operand> 
 
-<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> ) +
+<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> <Operand> )
+
 <ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
 <AssignmentOperator> 	-> = | += | -= | *= | /= | %=
 <RelationOperator>		-> == | >= | <= | > | < | !=
 
-
 Subprograms
 -------------------
-<Definition> 			-> <DataType> <Function>
+<Definition> 			-> <DataType> <Function> <Body>
 <Function> 				-> <FunctionName> ( <Parameters> ) 
-<Parameters> 			-> Epsilon | <Parameters>,<Parameters> | <Parameter>
+<Parameters> 			-> Epsilon | <Parameter>, <Parameters> | <Parameter>
 <Parameter> 			-> <DataType> <Variable>
+
+<return>		-> return ' ' (constant | identifier | <operation>)
+
