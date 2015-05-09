@@ -105,8 +105,8 @@
 						->	constant
 						->	boolean
 
-<Compound> 				-> AND 
-						->OR
+<Compound> 				->	AND 
+						->	OR
 
 <Iterator> 				-> <Assignment>
 						-> ++
@@ -161,19 +161,15 @@
 
 <Function> 				-> identifier ( <Parameters> ) 
 
-<Parameters> 			->	expressionsilon
-						->	<Parameter>, <Parameters>
-						->	<Parameter>
-
-<Parameter> 			-> <DataType> <Variable>
+<Parameter> 			->	<DataType> <Variable>
+						->	<DataType> <Variable>, <Parameter>
+						->	Epsilon
 
 <FunctionCall>			->	identifier ( <FunctionCallParameters> );
 
-<FunctionCallParameters>->	Epsilon
-						->	<FunctionCallParameter>, <FunctionCallParameters>
-						->	<FunctionCallParameter>
-
-<FunctionCallParameter> -> <DataType> <Variable>
+<FunctionCallParameter> ->	<Variable>
+						->	<Variable>, <FunctionCallParameter>
+						->	Epsilon
 
 <return>				-> return constant;
 						-> return identifier;
