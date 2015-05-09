@@ -1,75 +1,180 @@
-<statement>				-> <declaration> | <operation> | <condition> | <loop> | <return>
+<statement>				->	<declaration>
+						->	<expression>
+						->	<condition>
+						->	<loop>
+						->	<return>
 
-<declaration>			-> <variableDeclaration> | <listDec> | <unionDec> | <tupleDec>
+<declaration>			->	<variableDeclaration>
+						->	<listDec>
+						->	<unionDec>
+						->	<tupleDec>
 
-<variableDeclaration> 	->	( <dataType> ' ' identifier ( ' ' [ <arraySize> ] | Epsilon) ( = <operation> | Epsilon ) | <listDec> ) ;
-<arraySize>				->	MUST BE POSITIVE. SAAN TO?
+<variableDeclaration> 	->	<dataType> identifier;
+						->	<dataType> identifier [ constant ];
+						->	<dataType> identifier [ constant ] = <expression> ;	 	
 
-<dataType>				->	boolean | char | int | long | float | double
 
-<stringOpStatement>		->	identifier.<stringOp>(string);
-<stringOp>				->	split | strip | concat | copy
+<dataType>				->	boolean
+						->	char
+						->	int
+						->	long
+						->	float
+						->	double
 
-<variableDeclaration> 	->	<dataType> ' ' identifier ' ' [<arraySize>] ( = <operation> | Epsilon );
+<stringOpStatement>		->	identifier . <stringOp> ( string );
+						->	identifier . <stringOp> ( identifier );
 
-<listDec>				-> identifier = <listDec> ;
-<list>					->	[ ( (Epsilon) | ( <listElem>)]
-<listElem>				-> 	( <validListUnionValues> | Epsilon ) ( ,<listElem>| Epsilon)
+<stringOp>				->	split
+						->	strip
+						->	concat
+						->	copy
 
-<listEval>				->	identifier[constant];
+<variableDeclaration> 	->	<dataType> identifier [<arraySize>];
+						->	<dataType> identifier [<arraySize>] = <expression>;					
 
-<unionDec>				-> 	identifier = <union>;
-<union>					->	{(unionElement)}
-<unionElement>			->	( string=><validListUnionValues> (,<unionElement>| Epsilon ) )
-<validListUnionValues>	->  ( int | long | float | double | char | boolean | string | <listDec> )
+<listDec>				->	identifier = <listDec> ;
+
+<list>					->	[ <listElem> ]
+
+<listElem>				-> 	<validListUnionValues>
+						->	<validListUnionValues> , <listElem>
+						->	Epsilon
+
+<listEval>				->	identifier [ constant ]
+
+<unionDec>				-> 	identifier = <union> ;
+<union>					->	{ unionElement }
+<unionElement>			->	string => <validListUnionValues>
+						->	string => <validListUnionValues>, <unionElement>
+						->	Epsilon
+
+<unionAdd>				-> identifier[string] = <validListUnionValues>
+
+<validListUnionValues>	->  int
+						->	long
+						->	float
+						->	double
+						->	char
+						->	boolean
+						->	string
+						->	<list>
+						->	<tuple>
 
 <unionKeys>				->	identifier.keys();
-<unionStatement>		->	<unionEval>;
 <unionEval> 			->  identifier -> string
 
 <tupleDec>				-> identifier = <tuple>;
-<tuple>					-> ( <validListUnionValues>, | <tupleElementMore> )
-<tupleElementMore>		-> <validListUnionValues> ( , <tupleElementMore> | Epsilon )
-<tupleEval>				-> identifier[constant];
+<tuple>					-> ( <validListUnionValues>, )
+						-> ( <validListUnionValues>, <tupleElementMore> )
+
+<tupleElementMore>		-> <validListUnionValues> 
+						-> <validListUnionValues> , <tupleElementMore>
+						-> Epsilon
+
+<tupleStatement>		-> identifier = <tupleEval>;
+<tupleEval>				-> identifier [ constant ]
 
 <typeCastToInt> 		-> (int) identifier;
 <typeCastToFloat> 		-> (float) identifier;
 
-<WhileLoop> 			-> while ( <Condition> ) <Body>
+<WhileLoop> 			->	while ( <Condition> ) <Body>
 
-<Body>					-> ( <statement>; ( <statementMore> | Epsilon ))
-<statementMore>			-> <statement>; (<statementMore> | Epsilon)
+<Body>					->	<statement>;
+						->	<statement>; <statementMore>
+
+<statementMore>			->	<statement>; 
+						->	<statement>; <statementMore> 
+						->	Epsilon
 
 <ForLoop> 				-> for ( <Assignment> ; <Condition> ; <Iterator> ) <Body>
 
 <DoWhileLoop> 			-> do: <Body> while ( <Condition> );
 
-<IfThenElse> 			-> if ( <Condition> ): <Body> [ <elifClause> [else: <Body>] ] 
-<elifClause>			->(elif ( <Condition> ): <Body> ( <elifClause> | Epsilon ) )
+<IfThenElse> 			-> if ( <Condition> ): <Body> 
+						-> if ( <Condition> ): <Body> /n <elifClause>
+						-> if ( <Condition> ): <Body> /n <elifClause> else: <Body> 
 
-<Condition> 			-> <RelationalExpression> | <Condition> <Compound> <Condition> | <Negation> <Condition> | Epsilon
+<elifClause>			->	elif ( <Condition> ): <Body> /n <elifClause> 
+						-> Epsilon
 
-<Operand> 				-> identifier | constant | boolean
+<Condition> 			-> <RelationalExpression>
+						-> <Condition> <Compound> <Condition>
+						-> <Negation> <Condition>
 
-<Compound> 				-> AND | OR
+<Operand> 				->	identifier
+						->	constant
+						->	boolean
 
-<Iterator> 				-> <Assignment> | ++ | -- | Epsilon
+<Compound> 				-> AND 
+						->OR
 
-<Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>; | Epsilon
+<Iterator> 				-> <Assignment>
+						-> ++
+						-> --
+						-> Epsilon
 
-<operation>				->	<stringOpStatement> | <Assignment>
+<Assignment> 			->	identifier <AssignmentOperator> <ArithmeticExpression>;
+						->	identifier = <listEval>;
+						->	identifier = <function>;
+						->	identifier = <unionEval>;
 
-<RelationExpression>	-> <Operand> <RelationalOperator> <Operand> 
+<AssignmentOperator> 	->	=
+						->	+=
+						->	-= 
+						->	*=  
+						->	/= 
+						->	%=
 
-<ArithmeticExpression> 	-> ( < Operand > <ArithmeticOperator> <Operand> )
+<expression>			->	<stringOpStatement>
+						->	<ArithmeticExpression>
+						->	<tupleEval>
+						->	<listEval>
+						->	<list>
+						->	<union> 
+						->	<tuple> 
+						->	<RelationalExpression>
 
-<ArithmeticOperator> 	-> + | - | * | / | % | Epsilon
-<AssignmentOperator> 	-> = | += | -= | *= | /= | %=
-<RelationOperator>		-> == | >= | <= | > | < | !=
 
-<Definition> 			-> <DataType> <Function> <Body>
-<Function> 				-> <FunctionName> ( <Parameters> ) 
-<Parameters> 			-> Epsilon | <Parameter>, <Parameters> | <Parameter>
+<RelationExpression>	->	<Operand> <RelationalOperator> <Operand> 
+
+<ArithmeticExpression> 	-> <Operand> <ArithmeticOperator> <Operand>
+
+<ArithmeticOperator> 	->	+
+						->	-
+						->	*
+						->	/
+						->	%
+
+<RelationOperator>		->	== 
+						->	>=
+						->	<=
+						->	>
+						->  <
+						->	!=
+
+<Operand>				->	<constant>
+						->	identifier
+						-> <RelationExpression>
+
+
+<FunctionDefinition> 	-> <DataType> <Function>: <Body>
+
+<Function> 				-> identifier ( <Parameters> ) 
+
+<Parameters> 			->	expressionsilon
+						->	<Parameter>, <Parameters>
+						->	<Parameter>
+
 <Parameter> 			-> <DataType> <Variable>
 
-<return>				-> return ' ' (constant | identifier | <operation>)
+<FunctionCall>			->	identifier ( <FunctionCallParameters> );
+
+<FunctionCallParameters>->	Epsilon
+						->	<FunctionCallParameter>, <FunctionCallParameters>
+						->	<FunctionCallParameter>
+
+<FunctionCallParameter> -> <DataType> <Variable>
+
+<return>				-> return constant;
+						-> return identifier;
+						-> return <expression>;
