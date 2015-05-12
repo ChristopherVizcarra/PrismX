@@ -101,10 +101,6 @@
 						-> <Condition> <Compound> <Condition>
 						-> <Negation> <Condition>
 
-<Operand> 				->	identifier
-						->	constant
-						->	boolean
-
 <Compound> 				->	AND 
 						->	OR
 
@@ -155,7 +151,8 @@
 <Operand>				->	<constant>
 						->	identifier
 						-> <RelationExpression>
-
+						->	boolean
+						-> <ArtihmeticExpression>
 
 <FunctionDefinition> 	-> <DataType> <Function>: <Body>
 
