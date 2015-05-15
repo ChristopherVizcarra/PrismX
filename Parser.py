@@ -2,9 +2,11 @@ class algorithm():
 	def __init__(self, temp):
 		self.input = list(temp)
 		self.input = [value for value in self.input if value != " "]
-		#for x in range(len(self.input)):
-		#	if self.input[x] == "-" and self.input[x+1] == ""
-		#print self.input
+		for x in range(len(self.input)):
+			if self.input[x] == "-":
+				self.input[x+1] = float(self.input[x+1]) * -1
+				self.input[x] = "+"
+		print self.input
 
 	def check(self):
 		if len(self.input) == 1:
@@ -17,10 +19,6 @@ class algorithm():
 		elif self.input[1] == "+":
 			x = algorithm(self.input[2:])
 			return self.add(self.input[0], x.check())
-
-		elif self.input[1] == "-":
-			x = algorithm(self.input[2:])
-			return self.subtract(self.input[0], x.check())
 
 		elif self.input[1] == "*":
 			x = algorithm(self.input[2:])
@@ -40,14 +38,11 @@ class algorithm():
 	def add(self, x, y):
 		return float(x) + float(y)
 
-	def subtract(self, x, y):
-		return float(x) - float(y)
-
 	def multiply(self, x, y):
 		return float(x) * float(y)
 
 	def divide(self, x, y):
 		return float(x) / float(y)
 
-x = algorithm("y = 9 + 1 + 1")
+x = algorithm("y = 9 - 1 - 5 - 3 - 9 + 9 - 7 + 3")
 print x.check()
