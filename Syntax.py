@@ -45,6 +45,7 @@ class syntax():
 			if temp2 >= 0:
 				self.parse.append(temp)
 				self.parse.append(temp2)
+			#elif temp2 < 0:
 				
 
 			else:
