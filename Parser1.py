@@ -3,6 +3,7 @@ class algorithm():
 		self.input = ""
 		self.variables = {}
 		self.condition = 0	#Determines how deep the code is at
+		self.trial = -1
 
 	def set_input(self, temp):
 		self.input = temp
@@ -31,11 +32,14 @@ class algorithm():
 			elif len(temp1) > 1 and temp1[1] == "=" and self.condition == temp.count("\t"):	#if line is assignment, assign
 				self.equate(temp1[0], temp1[2:])
 
-			elif temp1[0] == "if" and "(" in temp1[1] and self.condition == temp.count("\t"):	#if line is if
+			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial == -1)) and "(" in temp1[1] and self.condition == temp.count("\t"):	#if line is if
 				temp2 = temp1[1].split("(")
 				temp2.remove("")
 				temp2 += temp1[2:]
 				self.conditional(temp2)
+
+			elif temp1[0] == "els" and len(temp1) == 1 and self.condition == temp.count("\t"):
+				self.conditional([1])
 
 			elif temp1[0] == "break" and len(temp1) == 1 and self.condition == temp.count("\t"):	#break
 				self.condition -= 1		
@@ -70,17 +74,21 @@ class algorithm():
 					thisisvariablenumber1[x] = self.variables[thisisvariablenumber1[x]]
 
 		if eval(" ".join([str(i) for i in thisisvariablenumber1])) == True:
+			self.trial = self.condition
 			self.condition += 1
-		else:
-			self.condition = 0
 
 x = algorithm()
 x.set_input("""
-z = 7;
-y = z;
-a = z * y;
+z = 8;
+y = 9;
+a = z * y * 0;
 if (z == 7 and y == 7)
 	w = 8;
-	break;
-	w = 100;
+elif (z == 8)
+	if (y == 8)
+		w = 50;
+	else
+		if (a == 0)
+			x = 7;
+		w = 100;
 """)
