@@ -19,9 +19,9 @@ class algorithm():
 			try:
 				temp = self.input[a]
 				temp = temp[:-1]
-				temp1 = list(temp.replace(" ", ""))
-				if temp1.count("\t") < self.condition:
-					while temp1.count("\t") < self.condition:
+				temp1 = list(temp.replace(" ", "").replace("\t", ""))
+				if temp.count("\t") < self.condition:
+					while temp.count("\t") < self.condition:
 						self.condition -= 1
 			except:
 				break
@@ -30,16 +30,16 @@ class algorithm():
 			if temp1 == []:	#if line is empty, do nothing
 				pass
 
-			elif list(temp.replace(" ", "").replace("\t", ""))[1] == "=" and temp1.count("\t") == self.condition:	#if line is assignment, assign
-				temp2 = list(temp.replace(" ", "").replace("\t", ""))
-				self.equate(temp2[0], temp2[2:])
+			elif temp1[1] == "=" and temp.count("\t") == self.condition:	#if line is assignment, assign
+				self.equate(temp1[0], temp1[2:])
 
-			elif list(temp.replace(" ", "").replace("\t", ""))[0] == "i" and list(temp.replace(" ", "").replace("\t", ""))[1] == "f" and list(temp.replace(" ", "").replace("\t", ""))[2] == "(" and temp1.count("\t") == self.condition:	#if line is if
-				temp2 = list(temp.replace(" ", "").replace("\t", ""))
-				temp2 = temp2[3:]
+			elif temp1[0] == "i" and temp1[1] == "f" and temp1[2] == "(" and temp.count("\t") == self.condition:	#if line is if
+				temp2 = temp1[3:]
 				temp2 = "".join(temp2)
 				self.conditional(temp2)
-			
+
+			elif temp1[0] == "b" and temp1[1] == "r" and temp1[2] == "e" and temp1[3] == "a" and temp1[4] == "k" and len(temp1) == 5:
+				self.condition -= 1			
 			#elif
 
 			a += 1
@@ -82,4 +82,6 @@ y=z;
 a = z * y;
 if (z == 7)
 	w = 8;
+	break;
+	w = 100;
 """)
