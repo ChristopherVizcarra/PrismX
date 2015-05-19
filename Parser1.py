@@ -3,7 +3,7 @@ class algorithm():
 		self.input = ""
 		self.variables = {}
 		self.condition = 0	#Determines how deep the code is at
-		self.trial = -1
+		self.trial = {}
 
 	def set_input(self, temp):
 		self.input = temp
@@ -26,25 +26,28 @@ class algorithm():
 				while temp.count("\t") < self.condition:
 					self.condition -= 1
 
-			if temp1 == [""]:	#if line is empty, do nothing
+			if self.condition != temp.count("\t"):
 				pass
 
-			elif len(temp1) > 1 and temp1[1] == "=" and self.condition == temp.count("\t"):	#if line is assignment, assign
+			elif temp1 == [""]:	#if line is empty, do nothing
+				pass
+
+			elif len(temp1) > 1 and temp1[1] == "=":	#if line is assignment, assign
 				self.equate(temp1[0], temp1[2:])
 
-			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial == -1)) and "(" in temp1[1] and self.condition == temp.count("\t"):	#if line is if
+			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1)) and "(" in temp1[1]:	#if line is if
 				temp2 = temp1[1].split("(")
 				temp2.remove("")
 				temp2 += temp1[2:]
 				self.conditional(temp2)
 
-			elif temp1[0] == "els" and len(temp1) == 1 and self.condition == temp.count("\t"):
+			elif temp1[0] == "els" and len(temp1) == 1 and self.trial[self.condition] == -1:
 				self.conditional([1])
 
-			elif temp1[0] == "break" and len(temp1) == 1 and self.condition == temp.count("\t"):	#break
+			elif temp1[0] == "break" and len(temp1) == 1:	#break
 				self.condition -= 1		
 
-			elif temp1[0] == "for" and "(" in temp1[1] and self.condition == temp.count("\t"):	#for loop
+			elif temp1[0] == "for" and "(" in temp1[1]:	#for loop
 				pass
 
 			a += 1
@@ -74,8 +77,10 @@ class algorithm():
 					thisisvariablenumber1[x] = self.variables[thisisvariablenumber1[x]]
 
 		if eval(" ".join([str(i) for i in thisisvariablenumber1])) == True:
-			self.trial = self.condition
+			self.trial[self.condition] = self.condition
 			self.condition += 1
+		else:
+			self.trial[self.condition] = -1
 
 x = algorithm()
 x.set_input("""
@@ -91,4 +96,6 @@ elif (z == 8)
 		if (a == 0)
 			x = 7;
 		w = 100;
+else
+	w = 5000;
 """)
