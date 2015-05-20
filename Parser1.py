@@ -37,13 +37,31 @@ class algorithm():
 					temp1[1] = temp1[1].split("=")
 					temp1[1].remove("")
 					temp1[2:] = list(temp1[0]) + temp1[1] + temp1[2:]
+
+				if temp1[2][0] == "<":
+					z = list(temp1[2])
+					z.remove("<")
+					temp1[2] = "".join([str(i) for i in z])
+					z = list(temp1[-1])
+					z.remove(">")
+					temp1[-1] = "".join([str(i) for i in z])
+
+				temp1[0] = list(temp1[0])
+				temp1[0].remove("|")
+				temp1[0] = "".join([str(i) for i in temp1[0]])
+				temp1[-1] = temp1[-1].split("|")[0]
+	
 				self.equate(temp1[0], temp1[2:])
 
 			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1)) and "(" in temp1[1]:	#if line is if
-				temp2 = temp1[1].split("(")
-				temp2.remove("")
-				temp2 += temp1[2:]
-				self.conditional(temp2)
+				#temp2 = temp1[1].split("(")
+				#temp2.remove("")
+				#temp2 += temp1[2:]
+
+				temp1[-1] += ")"
+				print temp1[1:]
+
+				self.conditional(temp1[1:])
 
 			elif temp1[0] == "els" and len(temp1) == 1 and self.trial[self.condition] == -1:
 				self.conditional([1])
@@ -57,6 +75,9 @@ class algorithm():
 				temp2[1] = temp2[1].split(";")
 				self.forer(temp2[1], a)
 
+			elif temp1[0] == "do" and len(temp1) == 1:
+				self.do_whiler(a)
+
 			a += 1
 
 	def equate(self, thisisvariablenumber1, thisisvariablenumber2):
@@ -68,16 +89,23 @@ class algorithm():
 			for x in range(len(thisisvariablenumber2)):
 				if thisisvariablenumber2[x] in self.variables:
 					thisisvariablenumber2[x] = self.variables[thisisvariablenumber2[x]]
-
 			self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
 
 		print self.variables
 
 	def conditional(self, thisisvariablenumber1, thisisvariablenumber2=0):
 		thisisvariablenumber1 = list(thisisvariablenumber1)
-		for x in range(len(thisisvariablenumber1[1:])):
-			if thisisvariablenumber1[x] in self.variables:
-				thisisvariablenumber1[x] = self.variables[thisisvariablenumber1[x]]
+
+		for x in range(len(thisisvariablenumber1)):
+			try:
+				thisisvariablenumber1[x] = list(thisisvariablenumber1[x])
+				thisisvariablenumber1[x] = [value for value in thisisvariablenumber1[x] if value != "(" and value != ")"]
+				thisisvariablenumber1[x] = "".join([str(i) for i in thisisvariablenumber1[x]])
+
+				if thisisvariablenumber1[x]  in self.variables:
+					thisisvariablenumber1[x] = self.variables[thisisvariablenumber1[x]]
+			except:
+				pass
 
 		if eval(" ".join([str(i) for i in thisisvariablenumber1])) == True and thisisvariablenumber2 == 0:
 			self.trial[self.condition] = self.condition
@@ -90,15 +118,33 @@ class algorithm():
 			self.trial[self.condition] = -1
 
 	def forer(self, thisisvariablenumber1, linenumber):
-		self.equate(thisisvariablenumber1[0].split(" ")[0], thisisvariablenumber1[0].split(" ")[2:])
+		print thisisvariablenumber1
+		temp = thisisvariablenumber1[0].split(" ")[0]
+		temp = list(temp)
+		temp = "".join([str(i) for i in temp[1:]])
+
+		temp1 = thisisvariablenumber1[0].split(" ")[2:]
+		temp2 = list(temp1[-1])
+		temp2.pop()
+		temp2 = "".join([str(i) for i in temp2])
+		temp1[-1] = temp2
+		self.equate(temp, temp1)
 
 		temp = self.input[linenumber+1:]
+		temp1 = []
+		for x in temp:
+			if x.count("\t") == self.condition+1 and len(x) != 1:
+				temp1.append(x)
+			else:
+				break
+		temp = temp1
+
+		self.condition += 1
+		self.trial[self.condition] = self.condition
 
 		while (self.conditional(thisisvariablenumber1[1].lstrip().split(" "), 2) == True):
-			self.condition += 1
-			self.trial[self.condition] = self.condition
-			self.check(temp)
 			self.iterate(thisisvariablenumber1[2])
+			self.check(temp)	
 
 	def iterate(self, thisisvariablenumber1):
 		temp1 = thisisvariablenumber1.lstrip()
@@ -114,28 +160,32 @@ class algorithm():
 		elif temp2 == ["--"]:
 			self.variables[temp1] -= 1
 
-		#elif temp2 == "''"
+	def do_whiler(self, linenumber):
+		temp = self.input[linenumber+1:]
+
+		print linenumber
+
 
 x = algorithm()
 x.set_input("""
-z = 9;
-y = 9;
-a = z * y * 0;
-if (z == 7 and y == 7)
-	w = 8;
+|z = 9|;
+|y = 9|;
+|a = <z * y * 0>|;
+if ((z == 7) and (y == 7))
+	|w = 8|;
 elif (z == 8)
 	if (y == 8)
-		w = 50;
+		|w = 50|;
 	else
 		if (a == 0)
-			x = 7;
-		w = 100;
+			|x = 7|;
+		|w = 100|;
 else
-	w = 5000;
-	b = w / 500 * 10;
+	|w = 5000|;
+	|b = <w / 500 * 10>;
 
-c = 0;
+|c = 0|;
 
-for (x = 0; x < 10; x ++)
-	c += 1;
+for (|x = 0|; (x < 10); x ++)
+	|c += 1|;
 """)
