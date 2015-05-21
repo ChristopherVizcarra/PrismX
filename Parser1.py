@@ -37,13 +37,24 @@ class algorithm():
 
 			elif "|" in temp1[0] and "|" in temp1[-1]:	#if line is assignment, assign
 				temp1 = self.remove_pipe(temp1)
-				temp1 = self.split_equals(temp1)
-				temp1 = self.remove_greater(temp1)
-	
-				if c == None:
-					self.equate(temp1[0], temp1[2:])
+
+				if len(temp1) > 2:
+					temp1 = self.split_equals(temp1)
+					temp1 = self.remove_greater(temp1)
+
+					if temp1[0] in datatypes:
+						if c == None:
+							self.equate(temp1[1], temp1[3:], None, temp1)
+						else:
+							self.equate(temp1[1], temp1[3:], c, temp1)
+					else:
+						if c == None:
+							self.equate(temp1[0], temp1[2:], None)
+						else:
+							self.equate(temp1[0], temp1[2:], c)
+
 				else:
-					self.equate(temp1[0], temp1[2:], c)
+					self.equate(temp1)
 
 			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1)) and "(" in temp1[1]:	#if line is if
 				self.conditional(temp1[1:])
@@ -162,18 +173,40 @@ class algorithm():
 
 		return thisisvariablenumber1
 
-	def equate(self, thisisvariablenumber1, thisisvariablenumber2, extra=None):
-		thisisvariablenumber2 = list(thisisvariablenumber2)
-		try:
-			self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+	def equate(self, thisisvariablenumber1, thisisvariablenumber2=None, extra=None, data=None):
+		if thisisvariablenumber2 != None:
+			thisisvariablenumber2 = list(thisisvariablenumber2)
+			try:
+				if data == None and thisisvariablenumber1 in self.variables:
+					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+				elif data != None:
+					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+				else:
+					exit(1)
 
-		except:
-			for x in range(len(thisisvariablenumber2)):
-				if extra != None and thisisvariablenumber2[x] in extra:
-					thisisvariablenumber2[x] = extra[thisisvariablenumber2[x]] 
-				elif thisisvariablenumber2[x] in self.variables:
-					thisisvariablenumber2[x] = self.variables[thisisvariablenumber2[x]]
-			self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+			except:
+				for x in range(len(thisisvariablenumber2)):
+					if extra != None and thisisvariablenumber2[x] in extra:
+						thisisvariablenumber2[x] = extra[thisisvariablenumber2[x]] 
+					elif thisisvariablenumber2[x] in self.variables:
+						thisisvariablenumber2[x] = self.variables[thisisvariablenumber2[x]]
+				if data == None and thisisvariablenumber1 in self.variables:
+					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+				elif data != None:
+					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+				else:
+					print "Error. Undeclared variable " + thisisvariablenumber1
+					exit(1)
+
+		else:
+			if thisisvariablenumber1[0] == "int":
+				self.variables[thisisvariablenumber1[1]] = 0
+			elif thisisvariablenumber1[0] == "float" or thisisvariablenumber1[0] == "long" or thisisvariablenumber1[0] == "double":
+				self.variables[thisisvariablenumber1[1]] = 0.0
+			elif thisisvariablenumber1[0] == "char":
+				self.variables[thisisvariablenumber1[1]] = ""
+			elif thisisvariablenumber1[0] == "boolean":
+				self.variables[thisisvariablenumber1[1]] = False
 
 		print self.variables
 
@@ -324,9 +357,12 @@ x.set_input("""
 int adder ( int d ):
 	|d+=<100-10>|;
 
-|z = 9|;
-|y = 9|;
-|a = <z * y * 0>|;
+|int z = 9|;
+
+|int y = 9|;
+|int a = <z * y * 0>|;
+|int w|;
+|int b|;
 if ( (z == 7) and (y == 7) )
 	|w = 8|;
 elif ( z == 8 )
@@ -339,7 +375,8 @@ elif ( z == 8 )
 else
 	|w = 5000|;
 	|b = <w / 500 * 10>|;
-| c=<0 + 100> |;
+|int c=<0 + 100> |;
+|int x|;
 for (|x = 0|; (x < 10); x ++)
 	if (z == 9)
 		do:
