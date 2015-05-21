@@ -61,10 +61,16 @@ class algorithm():
 
 				temp1 = " ".join([str(i) for i in temp1[1:]])
 				temp1 = temp1.split(";")
-				self.forer(temp1, a)
+				if b != None:
+					self.forer(temp1, a, b)
+				else:
+					self.forer(temp1, a, self.input)
 
 			elif temp1[0] == "do" and len(temp1) == 1:
-				self.do_whiler(a)
+				if b != None:
+					self.do_whiler(a, b)
+				else:
+					self.do_whiler(a, self.input)
 
 			elif temp1[0] in datatypes:
 				self.function_declare(temp1, a)
@@ -199,13 +205,13 @@ class algorithm():
 		else:
 			self.trial[self.condition] = -1
 
-	def forer(self, thisisvariablenumber1, linenumber):
+	def forer(self, thisisvariablenumber1, linenumber, lines):
 		temp1 = self.remove_pipe(list(thisisvariablenumber1[0].replace(" ", "")))
 		temp1 = self.split_equals(temp1)
 		temp1 = self.remove_greater(temp1)
 		self.equate(temp1[0], temp1[2:])
 
-		temp = self.input[linenumber+1:]
+		temp = lines[linenumber+1:]
 		temp1 = []
 		for x in temp:
 			if x.count("\t") >= self.condition+1 and len(x) != 1:
@@ -237,8 +243,8 @@ class algorithm():
 		elif temp2 == ["--"]:
 			self.variables[temp1] -= 1
 
-	def do_whiler(self, linenumber):
-		temp = self.input[linenumber+1:]
+	def do_whiler(self, linenumber, lines):
+		temp = lines[linenumber+1:]
 		temp1 = []
 		test = ""
 		for x in temp:
@@ -336,7 +342,9 @@ else
 | c=<0 + 100> |;
 for (|x = 0|; (x < 10); x ++)
 	if (z == 9)
-		|c += 1|;
+		do:
+			|c += 1|;
+		while (c < 1000);
 do:
 	|c -= 1|;
 while (c > 100);
