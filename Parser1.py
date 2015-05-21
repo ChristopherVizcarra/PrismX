@@ -208,7 +208,7 @@ class algorithm():
 		temp = self.input[linenumber+1:]
 		temp1 = []
 		for x in temp:
-			if x.count("\t") == self.condition+1 and len(x) != 1:
+			if x.count("\t") >= self.condition+1 and len(x) != 1:
 				temp1.append(x)
 			else:
 				break
@@ -242,7 +242,7 @@ class algorithm():
 		temp1 = []
 		test = ""
 		for x in temp:
-			if x.count("\t") == self.condition+1 and len(x) != 1:
+			if x.count("\t") >= self.condition+1 and len(x) != 1:
 				temp1.append(x)
 			else:
 				test = x
@@ -335,7 +335,8 @@ else
 	|b = <w / 500 * 10>|;
 | c=<0 + 100> |;
 for (|x = 0|; (x < 10); x ++)
-	|c += 1|;
+	if (z == 9)
+		|c += 1|;
 do:
 	|c -= 1|;
 while (c > 100);
