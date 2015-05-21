@@ -1,4 +1,4 @@
-datatypes = ["boolean", "char", "int", "long", "float", "double"]
+datatypes = ["boolean", "char", "int", "float"]
 
 class algorithm():
 	def __init__(self):
@@ -23,6 +23,16 @@ class algorithm():
 					temp = b[a]
 				temp = temp[:-1]
 				temp1 = temp.lstrip()
+				temp1 = temp1.split(" ")
+
+				for x in range(len(temp1)):
+					if "#" in temp1[x] and ((temp1[:x].count('"') != temp1[x:].count('"')) or (temp1[:x].count("'") != temp1[x:].count("'")) or (temp1[:x].count("'") == 0 and temp1[:x].count('"'))) == 0:
+						temp1[x] = temp1[x].split("#")
+						temp1[x] = temp1[x][0]
+						temp1 = temp1[:x+1]
+						break
+				temp1 = " ".join([str(i) for i in temp1])
+				temp1 = temp1.rstrip()
 				temp1 = temp1.split(" ")
 
 			except:
@@ -93,6 +103,12 @@ class algorithm():
 				temp2 = "".join([str(i) for i in temp2])
 				temp2 = temp2.split(",")
 				self.run_function(temp1[0], temp2)
+
+			elif temp1[0] == "print":
+				self.printer(temp1)
+
+			elif temp1[0] == "read":
+				self.reader(temp1)
 
 			a += 1
 
@@ -177,7 +193,7 @@ class algorithm():
 		if thisisvariablenumber2 != None:
 			thisisvariablenumber2 = list(thisisvariablenumber2)
 			try:
-				if data == None and thisisvariablenumber1 in self.variables:
+				if data == None and (thisisvariablenumber1 in self.variables or thisisvariablenumber1 in extra):
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
 				elif data != None:
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
@@ -190,7 +206,8 @@ class algorithm():
 						thisisvariablenumber2[x] = extra[thisisvariablenumber2[x]] 
 					elif thisisvariablenumber2[x] in self.variables:
 						thisisvariablenumber2[x] = self.variables[thisisvariablenumber2[x]]
-				if data == None and thisisvariablenumber1 in self.variables:
+
+				if data == None and (thisisvariablenumber1 in self.variables or thisisvariablenumber1 in extra):
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
 				elif data != None:
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
@@ -201,7 +218,7 @@ class algorithm():
 		else:
 			if thisisvariablenumber1[0] == "int":
 				self.variables[thisisvariablenumber1[1]] = 0
-			elif thisisvariablenumber1[0] == "float" or thisisvariablenumber1[0] == "long" or thisisvariablenumber1[0] == "double":
+			elif thisisvariablenumber1[0] == "float":
 				self.variables[thisisvariablenumber1[1]] = 0.0
 			elif thisisvariablenumber1[0] == "char":
 				self.variables[thisisvariablenumber1[1]] = ""
@@ -340,52 +357,80 @@ class algorithm():
 					temp1[temp2] = int(temp1[temp2])
 				elif temp3 == "float":
 					temp1[temp2] = float(temp1[temp2])
-				elif temp3 == "long":
-					temp1[temp2] = long(temp1[temp2])
-				elif temp3 == "double":
-					#temp1[temp2] = double(temp1[temp2])
-					pass
 				a += 1
 
 		self.condition += 1
 
 		self.check(temp[2], temp1)
 
+	def printer(self, arguments):
+		temp = arguments[1:]
+		temp = " ".join([str(i) for i in temp])
+		temp = list(temp)
+		temp.pop(0)
+		temp.pop(-1)
+		temp = "".join([str(i) for i in temp])
+		print temp
+
+	def reader(self, arguments):
+		temp = arguments[1]
+		temp = list(temp)
+		temp.pop(0)
+		temp.pop(-1)
+		temp = "".join([str(i) for i in temp])
+
+		temp1 = raw_input();
+
+		self.equate(temp, temp1)
+
 x = algorithm()
 x.set_input("""
 
-int adder ( int d ):
-	|d+=<100-10>|;
+int adder ( int d ): #This is a comment :)
+	print ("BYE");
+	|d+=< 100-10 >|;
 
 |int z = 9|;
-
 |int y = 9|;
 |int a = <z * y * 0>|;
 |int w|;
 |int b|;
+
 if ( (z == 7) and (y == 7) )
 	|w = 8|;
+	end
 elif ( z == 8 )
 	if (y == 8)
 		|w = 50|;
+	end
 	else
 		if (a == 0)
 			|x = 7|;
 		|w = 100|;
+	end
 else
 	|w = 5000|;
 	|b = <w / 500 * 10>|;
+	end
+
 |int c=<0 + 100> |;
 |int x|;
+
 for (|x = 0|; (x < 10); x ++)
 	if (z == 9)
 		do:
 			|c += 1|;
 		while (c < 1000);
+		end
+	fi
+
 do:
 	|c -= 1|;
 while (c > 100);
 
 adder ( 5 );
+
+|char TEMP|;
+read (TEMP);
 
 """)
