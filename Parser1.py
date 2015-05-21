@@ -141,13 +141,17 @@ class algorithm():
 					thisisvariablenumber1[x] = self.variables[thisisvariablenumber1[x]]
 			except:
 				pass
+		try:
+			temp = eval(" ".join([str(i) for i in thisisvariablenumber1]))
+		except:
+			temp = eval("".join([str(i) for i in thisisvariablenumber1]))
 
-		if eval(" ".join([str(i) for i in thisisvariablenumber1])) == True and thisisvariablenumber2 == 0:
+		if temp == True and thisisvariablenumber2 == 0:
 			self.trial[self.condition] = self.condition
 			self.condition += 1
-		elif eval(" ".join([str(i) for i in thisisvariablenumber1])) == True and thisisvariablenumber2 == 1:
+		elif temp == True and thisisvariablenumber2 == 1:
 			return self.condition
-		elif eval(" ".join([str(i) for i in thisisvariablenumber1])) == True and thisisvariablenumber2 == 2:
+		elif temp == True and thisisvariablenumber2 == 2:
 			return True
 		else:
 			self.trial[self.condition] = -1
@@ -171,9 +175,9 @@ class algorithm():
 		self.trial[self.condition] = self.condition
 
 		while (self.conditional(thisisvariablenumber1[1].lstrip().split(" "), 2) == True):
-			self.iterate(thisisvariablenumber1[2])
 			self.check(temp)
-			
+			self.iterate(thisisvariablenumber1[2])
+
 		self.condition -= 1
 
 	def iterate(self, thisisvariablenumber1):
@@ -192,8 +196,29 @@ class algorithm():
 
 	def do_whiler(self, linenumber):
 		temp = self.input[linenumber+1:]
+		temp1 = []
+		test = ""
+		for x in temp:
+			if x.count("\t") == self.condition+1 and len(x) != 1:
+				temp1.append(x)
+			else:
+				test = x
+				break
 
-		print linenumber
+		temp = temp1
+		self.condition += 1
+		self.trial[self.condition] = self.condition
+		self.check(temp)
+		test = test.split(" ")
+		test[-1] = list(test[-1])[:-1]
+		test[-1] = "".join([str(i) for i in test[-1]])
+		test = test[1:]
+		test = " ".join([str(i) for i in test])
+
+		while(self.conditional(test, 2) == True):
+			self.check(temp)
+
+		self.condition -= 1
 
 
 x = algorithm()
@@ -221,6 +246,8 @@ else
 for (|x = 0|; (x < 10); x ++)
 	|c += 1|;
 
-
+do:
+	|c -= 1|;
+while (c > 100);
 
 """)
