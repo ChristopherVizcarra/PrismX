@@ -32,35 +32,14 @@ class algorithm():
 			if self.condition != temp.count("\t") or temp1 == [""]:
 				pass
 
-			elif len(temp1) > 1 and "=" in temp1[1]:	#if line is assignment, assign
-				if len(temp1[1]) > 1:
-					temp1[1] = temp1[1].split("=")
-					temp1[1].remove("")
-					temp1[2:] = list(temp1[0]) + temp1[1] + temp1[2:]
-
-				if temp1[2][0] == "<":
-					z = list(temp1[2])
-					z.remove("<")
-					temp1[2] = "".join([str(i) for i in z])
-					z = list(temp1[-1])
-					z.remove(">")
-					temp1[-1] = "".join([str(i) for i in z])
-
-				temp1[0] = list(temp1[0])
-				temp1[0].remove("|")
-				temp1[0] = "".join([str(i) for i in temp1[0]])
-				temp1[-1] = temp1[-1].split("|")[0]
+			elif len(temp1) > 1 and "|" in temp1[0] and "|" in temp1[-1]:	#if line is assignment, assign
+				temp1 = self.remove_pipe(temp1)
+				temp1 = self.split_equals(temp1)
+				temp1 = self.remove_greater(temp1)
 	
 				self.equate(temp1[0], temp1[2:])
 
 			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1)) and "(" in temp1[1]:	#if line is if
-				#temp2 = temp1[1].split("(")
-				#temp2.remove("")
-				#temp2 += temp1[2:]
-
-				temp1[-1] += ")"
-				print temp1[1:]
-
 				self.conditional(temp1[1:])
 
 			elif temp1[0] == "els" and len(temp1) == 1 and self.trial[self.condition] == -1:
@@ -70,15 +49,71 @@ class algorithm():
 				self.condition -= 1		
 
 			elif temp1[0] == "for" and "(" in temp1[1]:	#for loop
-				temp2 = " ".join([str(i) for i in temp1])
-				temp2 = temp2.split("(")
-				temp2[1] = temp2[1].split(";")
-				self.forer(temp2[1], a)
+				temp1[1] = list(temp1[1])
+				temp1[1].remove("(")
+				temp1[1] = "".join([str(i) for i in temp1[1]])
+
+				temp1 = " ".join([str(i) for i in temp1[1:]])
+				temp1 = temp1.split(";")
+				self.forer(temp1, a)
 
 			elif temp1[0] == "do" and len(temp1) == 1:
 				self.do_whiler(a)
 
 			a += 1
+
+	def remove_pipe(self, thisisvariablenumber1):	#input is list
+		if len(thisisvariablenumber1[0]) == 1:
+			thisisvariablenumber1.pop(0)
+		else:
+			thisisvariablenumber1[0] = thisisvariablenumber1[0].split("|")
+			thisisvariablenumber1[0] = "".join([str(i) for i in thisisvariablenumber1[0][1:]])
+
+		if len(thisisvariablenumber1[-1]) == 1:
+			thisisvariablenumber1.pop(-1)
+		else:
+			thisisvariablenumber1[-1] = thisisvariablenumber1[-1].split("|")
+			thisisvariablenumber1[-1] = "".join([str(i) for i in thisisvariablenumber1[-1][:-1]])
+
+		return thisisvariablenumber1
+
+	def split_equals(self, thisisvariablenumber1):
+		for x in range(len(thisisvariablenumber1)):
+			if "=" in thisisvariablenumber1[x] and len(thisisvariablenumber1[x]) != 1:
+				thisisvariablenumber1[x] = thisisvariablenumber1[x].split("=")
+				temp1 = thisisvariablenumber1[x]
+
+				if temp1[0] in ["+", "-", "*", "%", "/"]:
+					thisisvariablenumber1.insert(x, "=")
+					thisisvariablenumber1.insert(x+1, thisisvariablenumber1[0])
+					thisisvariablenumber1.insert(x+2, temp1[0])
+					thisisvariablenumber1.pop(x+3)
+					break
+
+				thisisvariablenumber1.insert(x, temp1[0])
+				thisisvariablenumber1.insert(x+1, "=")
+				thisisvariablenumber1.insert(x+2, temp1[1])
+				thisisvariablenumber1.pop(x+3)
+				break
+		
+		return thisisvariablenumber1
+
+
+	def remove_greater(self, thisisvariablenumber1):
+		if len(thisisvariablenumber1[-1]) == 1 and ">" in thisisvariablenumber1[-1]:
+			thisisvariablenumber1.pop(-1)
+		elif ">" in thisisvariablenumber1[-1]:
+			thisisvariablenumber1[-1] = thisisvariablenumber1[-1].split(">")
+			thisisvariablenumber1[-1] = "".join([str(i) for i in thisisvariablenumber1[-1][:-1]])
+
+		if len(thisisvariablenumber1[2:][0]) == 1 and "<" in thisisvariablenumber1[2:][0]:
+			thisisvariablenumber1.remove("<")
+		elif "<" in thisisvariablenumber1[2:][0]:
+			thisisvariablenumber1[2] = thisisvariablenumber1[2].split("<")
+			thisisvariablenumber1[2] = "".join([str(i) for i in thisisvariablenumber1[2]])
+
+		return thisisvariablenumber1
+
 
 	def equate(self, thisisvariablenumber1, thisisvariablenumber2):
 		thisisvariablenumber2 = list(thisisvariablenumber2)
@@ -118,17 +153,10 @@ class algorithm():
 			self.trial[self.condition] = -1
 
 	def forer(self, thisisvariablenumber1, linenumber):
-		print thisisvariablenumber1
-		temp = thisisvariablenumber1[0].split(" ")[0]
-		temp = list(temp)
-		temp = "".join([str(i) for i in temp[1:]])
-
-		temp1 = thisisvariablenumber1[0].split(" ")[2:]
-		temp2 = list(temp1[-1])
-		temp2.pop()
-		temp2 = "".join([str(i) for i in temp2])
-		temp1[-1] = temp2
-		self.equate(temp, temp1)
+		temp1 = self.remove_pipe(list(thisisvariablenumber1[0].replace(" ", "")))
+		temp1 = self.split_equals(temp1)
+		temp1 = self.remove_greater(temp1)
+		self.equate(temp1[0], temp1[2:])
 
 		temp = self.input[linenumber+1:]
 		temp1 = []
@@ -168,12 +196,13 @@ class algorithm():
 
 x = algorithm()
 x.set_input("""
+
 |z = 9|;
 |y = 9|;
 |a = <z * y * 0>|;
-if ((z == 7) and (y == 7))
+if ( (z == 7) and (y == 7) )
 	|w = 8|;
-elif (z == 8)
+elif ( z == 8 )
 	if (y == 8)
 		|w = 50|;
 	else
@@ -182,10 +211,14 @@ elif (z == 8)
 		|w = 100|;
 else
 	|w = 5000|;
-	|b = <w / 500 * 10>;
+	|b = <w / 500 * 10>|;
 
-|c = 0|;
+
+| c=<0 + 100> |;
 
 for (|x = 0|; (x < 10); x ++)
 	|c += 1|;
+
+
+
 """)
