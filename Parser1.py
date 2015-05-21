@@ -172,7 +172,9 @@ class algorithm():
 
 		while (self.conditional(thisisvariablenumber1[1].lstrip().split(" "), 2) == True):
 			self.iterate(thisisvariablenumber1[2])
-			self.check(temp)	
+			self.check(temp)
+			
+		self.condition -= 1
 
 	def iterate(self, thisisvariablenumber1):
 		temp1 = thisisvariablenumber1.lstrip()
