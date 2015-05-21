@@ -80,17 +80,21 @@ class algorithm():
 			a += 1
 
 	def remove_pipe(self, thisisvariablenumber1):	#input is list
-		if len(thisisvariablenumber1[0]) == 1:
+		if thisisvariablenumber1[0] == "|":
 			thisisvariablenumber1.pop(0)
 		else:
 			thisisvariablenumber1[0] = thisisvariablenumber1[0].split("|")
 			thisisvariablenumber1[0] = "".join([str(i) for i in thisisvariablenumber1[0][1:]])
 
-		if len(thisisvariablenumber1[-1]) == 1:
+		if thisisvariablenumber1[-1] == "|":
 			thisisvariablenumber1.pop(-1)
 		else:
+			
 			thisisvariablenumber1[-1] = thisisvariablenumber1[-1].split("|")
-			thisisvariablenumber1[-1] = "".join([str(i) for i in thisisvariablenumber1[-1][:-1]])
+			if len(thisisvariablenumber1) != 1:
+				thisisvariablenumber1[-1] = "".join([str(i) for i in thisisvariablenumber1[-1][:-1]])
+			else:
+				return thisisvariablenumber1[0]
 
 		return thisisvariablenumber1
 
@@ -100,11 +104,29 @@ class algorithm():
 				thisisvariablenumber1[x] = thisisvariablenumber1[x].split("=")
 				temp1 = thisisvariablenumber1[x]
 
-				if temp1[0] in ["+", "-", "*", "%", "/"]:
-					thisisvariablenumber1.insert(x, "=")
-					thisisvariablenumber1.insert(x+1, thisisvariablenumber1[0])
-					thisisvariablenumber1.insert(x+2, temp1[0])
-					thisisvariablenumber1.pop(x+3)
+				if "+" in temp1[0] or "-" in temp1[0] or "*" in temp1[0] or "/" in temp1[0] or "%" in temp1[0]:
+					if len(list(temp1[0])) == 1:
+						thisisvariablenumber1.insert(x, "=")
+						thisisvariablenumber1.insert(x+1, thisisvariablenumber1[0])
+						thisisvariablenumber1.insert(x+2, temp1[0])
+						thisisvariablenumber1.insert(x+3, temp1[1])
+						thisisvariablenumber1.pop(x+4)
+					else:
+						
+						temp2 = list(temp1[0])
+						temp3 = temp2[-1]
+						temp2 = "".join([str(i) for i in temp2[:-1]])
+						temp4 = []
+						temp4.append(temp2)
+						temp4.append("=")
+						temp4.append(temp2)
+						temp4.append(temp3)
+						temp5 = thisisvariablenumber1[1:]
+						temp5.insert(0,list(temp1)[1])
+						for x in temp5:
+							temp4.append(x)
+
+						thisisvariablenumber1 = temp4
 					break
 
 				thisisvariablenumber1.insert(x, temp1[0])
@@ -124,9 +146,13 @@ class algorithm():
 
 		if len(thisisvariablenumber1[2:][0]) == 1 and "<" in thisisvariablenumber1[2:][0]:
 			thisisvariablenumber1.remove("<")
-		elif "<" in thisisvariablenumber1[2:][0]:
-			thisisvariablenumber1[2] = thisisvariablenumber1[2].split("<")
-			thisisvariablenumber1[2] = "".join([str(i) for i in thisisvariablenumber1[2]])
+		else:
+			thisisvariablenumber1[2:] = "".join([str(i) for i in thisisvariablenumber1[2:]])
+			try:
+				thisisvariablenumber1.remove("<")
+				thisisvariablenumber1[2:] = "".join([str(i) for i in thisisvariablenumber1[2:]])
+			except:
+				pass
 
 		return thisisvariablenumber1
 
@@ -258,7 +284,6 @@ class algorithm():
 
 	def run_function(self, name, arguments=None):
 		temp = self.functions[name]
-		print temp
 		if len(temp[1]) != len(arguments):
 			print "ERROR. Invalid arguments."
 			exit(1)
@@ -291,7 +316,7 @@ x = algorithm()
 x.set_input("""
 
 int adder ( int d ):
-	| d += 100 |;
+	|d+=<100-10>|;
 
 |z = 9|;
 |y = 9|;
