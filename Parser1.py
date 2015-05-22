@@ -205,8 +205,24 @@ class algorithm():
 			try:
 				if data == None and (thisisvariablenumber1 in self.variables or thisisvariablenumber1 in extra):
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+					if ".pop" in "".join([str(i) for i in thisisvariablenumber2]):
+						temp1 = "".join([str(i) for i in thisisvariablenumber2])
+						temp1 = temp1.split(".pop")
+						temp2 = list(temp1[1])
+						temp2 = "".join([str(i) for i in temp2[1:-1]])
+						for x in self.variables:
+							if str(self.variables[x]) == str(temp1[0]):
+								self.variables[x].pop(int(temp2))
 				elif data != None:
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+					if ".pop" in "".join([str(i) for i in thisisvariablenumber2]):
+						temp1 = "".join([str(i) for i in thisisvariablenumber2])
+						temp1 = temp1.split(".pop")
+						temp2 = list(temp1[1])
+						temp2 = "".join([str(i) for i in temp2[1:-1]])
+						for x in self.variables:
+							if str(self.variables[x]) == str(temp1[0]):
+								self.variables[x].pop(int(temp2))
 				else:
 					exit(1)
 
@@ -219,8 +235,24 @@ class algorithm():
 
 				if data == None and (thisisvariablenumber1 in self.variables or thisisvariablenumber1 in extra):
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+					if ".pop" in "".join([str(i) for i in thisisvariablenumber2]):
+						temp1 = "".join([str(i) for i in thisisvariablenumber2])
+						temp1 = temp1.split(".pop")
+						temp2 = list(temp1[1])
+						temp2 = "".join([str(i) for i in temp2[1:-1]])
+						for x in self.variables:
+							if str(self.variables[x]) == str(temp1[0]):
+								self.variables[x].pop(int(temp2))
 				elif data != None:
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
+					if ".pop" in "".join([str(i) for i in thisisvariablenumber2]):
+						temp1 = "".join([str(i) for i in thisisvariablenumber2])
+						temp1 = temp1.split(".pop")
+						temp2 = list(temp1[1])
+						temp2 = "".join([str(i) for i in temp2[1:-1]])
+						for x in self.variables:
+							if str(self.variables[x]) == str(temp1[0]):
+								self.variables[x].pop(int(temp2))
 				else:
 					print "Error. Undeclared variable " + thisisvariablenumber1
 					exit(1)
@@ -380,7 +412,10 @@ class algorithm():
 		temp.pop(0)
 		temp.pop(-1)
 		temp = "".join([str(i) for i in temp])
-		print temp
+		if temp in self.variables:
+			print self.variables[temp]
+		else:
+			print temp
 
 	def reader(self, arguments):
 		temp = arguments[1]
@@ -417,13 +452,19 @@ class algorithm():
 x = algorithm()
 x.set_input("""
 
+|int t = [100, 5]|;
+
+int adder ( int d ): #This is a comment :)
+	|d+=< 100-10 >|;
+
+adder ( 5 );
+
+|int x = t.pop(1)|;
+|int y = t.pop(0)|;
+
 |string t = []|;
 
 t.insert(0,"HELLO");
-
-int adder ( int d ): #This is a comment :)
-	print ("BYE");
-	|d+=< 100-10 >|;
 
 |int z = 9|;
 |int y = 9|;
@@ -463,7 +504,7 @@ do:
 	|c -= 1|;
 while (c > 100);
 
-adder ( 5 );
+
 
 t.pop(0);
 
