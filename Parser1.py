@@ -52,21 +52,14 @@ class algorithm():
 					temp1 = self.split_equals(temp1)
 					temp1 = self.remove_greater(temp1)
 
-					if temp1[0] in datatypes:
-						if c == None:
-							self.equate(temp1[1], temp1[3:], None, temp1)
-						else:
-							self.equate(temp1[1], temp1[3:], c, temp1)
+					if temp1[0] in datatypes and len(temp1) == 2:
+						self.equate(temp1[1], temp1[3:], c, temp1)
 					else:
-						if c == None:
-							self.equate(temp1[0], temp1[2:], None)
-						else:
-							self.equate(temp1[0], temp1[2:], c)
-
+						self.equate(temp1[0], temp1[2:], c)
 				else:
 					self.equate(temp1)
 
-			elif (temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1)) and "(" in temp1[1]:	#if line is if
+			elif temp1[0] == "if" or (temp1[0] == "elif" and self.trial[self.condition] == -1):	#if line is if
 				self.conditional(temp1[1:])
 
 			elif temp1[0] == "els" and len(temp1) == 1 and self.trial[self.condition] == -1:
@@ -118,6 +111,8 @@ class algorithm():
 				temp1 = "".join([str(i) for i in temp1])
 				temp2 = temp1.split(".pop")
 				self.pop(temp2[0], temp2[1])
+
+
 
 			a += 1
 
@@ -199,7 +194,7 @@ class algorithm():
 		return thisisvariablenumber1
 
 	def equate(self, thisisvariablenumber1, thisisvariablenumber2=None, extra=None, data=None):
-		if thisisvariablenumber2 != None:
+		if thisisvariablenumber2 != None:	
 			temp1 = list(thisisvariablenumber2)
 			temp2 = []
 			for x in temp1:
@@ -207,11 +202,24 @@ class algorithm():
 					pass
 				else:
 					temp2.append(x)
-			thisisvariablenumber2 = temp2
-
-		if thisisvariablenumber2 != None:
-			thisisvariablenumber2 = list(thisisvariablenumber2)
+			temp3 = ""
+			for x in range(len(thisisvariablenumber2)):
+				if thisisvariablenumber2[x] in ["+", "-", "/", "*", "%"]:
+					temp3 = " ".join([str(i) for i in thisisvariablenumber2[:x]]) + " " + thisisvariablenumber2[x] + " " + "".join([str(i) for i in thisisvariablenumber2[x+1:]])
+					
+			if temp3 == "":
+				thisisvariablenumber2 = "".join([str(i) for i in temp2])
+				thisisvariablenumber2 = thisisvariablenumber2.split("\n")
+			else:
+				thisisvariablenumber2 = temp3.split(" ")
+			
 			try:
+				for x in range(len(thisisvariablenumber2)):
+					if extra != None and thisisvariablenumber2[x] in extra:
+						thisisvariablenumber2[x] = extra[thisisvariablenumber2[x]] 
+					elif thisisvariablenumber2[x] in self.variables:
+						thisisvariablenumber2[x] = self.variables[thisisvariablenumber2[x]]
+
 				if data == None and (thisisvariablenumber1 in self.variables or thisisvariablenumber1 in extra):
 					self.variables[thisisvariablenumber1] = eval("".join([str(i) for i in thisisvariablenumber2]))
 					if ".pop" in "".join([str(i) for i in thisisvariablenumber2]):
@@ -267,6 +275,7 @@ class algorithm():
 					exit(1)
 
 		else:
+			#if thisisvariablenumber2 != None and data != None:
 			if thisisvariablenumber1[0] == "int":
 				self.variables[thisisvariablenumber1[1]] = 0
 			elif thisisvariablenumber1[0] == "float":
@@ -275,8 +284,8 @@ class algorithm():
 				self.variables[thisisvariablenumber1[1]] = ""
 			elif thisisvariablenumber1[0] == "boolean":
 				self.variables[thisisvariablenumber1[1]] = False
-
-		print self.variables
+			#elif data != None:
+			#	self.equate(thisisvariablenumber1, thisisvariablenumber2, extra, None)
 
 	def conditional(self, thisisvariablenumber1, thisisvariablenumber2=0):
 		thisisvariablenumber1 = list(thisisvariablenumber1)
@@ -317,6 +326,8 @@ class algorithm():
 		for x in temp:
 			if x.count("\t") >= self.condition+1 and len(x) != 1:
 				temp1.append(x)
+			elif len(x) == 0:
+				pass
 			else:
 				break
 		temp = temp1
@@ -324,9 +335,18 @@ class algorithm():
 		self.condition += 1
 		self.trial[self.condition] = self.condition
 
+		temp2 = list(thisisvariablenumber1[2])
+		temp3 = []
+		for x in temp2:
+			if x == "(" or x == ")":
+				pass
+			else:
+				temp3.append(x)
+		temp3 = "".join([str(i) for i in temp3])
+
 		while (self.conditional(thisisvariablenumber1[1].lstrip().split(" "), 2) == True):
 			self.check(temp)
-			self.iterate(thisisvariablenumber1[2])
+			self.iterate(temp3)
 
 		self.condition -= 1
 
@@ -428,7 +448,10 @@ class algorithm():
 		if temp in self.variables:
 			print self.variables[temp]
 		else:
-			print temp
+			try:
+				print eval(temp)
+			except:
+				print temp
 
 	def reader(self, arguments):
 		temp = arguments[1]
@@ -450,8 +473,6 @@ class algorithm():
 
 		self.variables[temp].insert(int(objects[0]), eval(objects[1]))
 
-		print self.variables
-
 	def pop(self, thisisvariablenumber1, thisisvariablenumber2):
 		temp = thisisvariablenumber1
 		objects = thisisvariablenumber2
@@ -460,70 +481,34 @@ class algorithm():
 
 		self.variables[temp].pop(int(objects))
 
-		print self.variables
-
 x = algorithm()
 x.set_input("""
 
+|int start|;
+|int end1|;
 
-|int a = <1 + <2 + 3>>|;
-|int t = [100, 5]|;
+print ("Enter start year:");
+read (start);
 
-int adder ( int d ): #This is a comment :)
-	|d+=< 100-10 >|;
+print ("Enter end year:");
+read (end1);
 
-|int x = 5|;
-
-adder (x);
-
-|int x = t.pop(1)|;
-|int y = t.pop(0)|;
-
-|string t = []|;
-
-t.insert(0,"HELLO");
-
-|int z = 9|;
-|int y = 9|;
-|int a = <z * y * 0>|;
-|int w|;
-|int b|;
-
-if ( (z == 7) and (y == 7) )
-	|w = 8|;
-	end
-elif ( z == 8 )
-	if (y == 8)
-		|w = 50|;
-	end
-	else
-		if (a == 0)
-			|x = 7|;
-		|w = 100|;
-	end
-else
-	|w = 5000|;
-	|b = <w / 500 * 10>|;
-	end
-
-|int c=<0 + 100> |;
 |int x|;
 
-for (|x = 0|; (x < 10); x ++)
-	if (z == 9)
-		do:
-			|c += 1|;
-		while (c < 1000);
+for (|x = start|; (x <= end1); x ++)
+	|int y|;
+	|int z|;
+	|int w|;
+	|y = <x % 4>|;
+	|z = <x % 100>|;
+	|w = <x % 400>|;
+
+	if ((y == 0) and (z != 0))
+		print (x);
+		end
+	elif ((y == 0) and (z == 0) and (w == 0))
+		print (x);
 		end
 	fi
-
-do:
-	|c -= 1|;
-while (c > 100);
-
-t.pop(0);
-
-|string TEMP|;
-#read (TEMP);
 
 """)
