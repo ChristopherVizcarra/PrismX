@@ -1,4 +1,4 @@
-datatypes = ["boolean", "char", "int", "float"]
+datatypes = ["boolean", "string", "int", "float"]
 
 class algorithm():
 	def __init__(self):
@@ -110,6 +110,16 @@ class algorithm():
 			elif temp1[0] == "read":
 				self.reader(temp1)
 
+			elif ".insert" in temp1[0]:
+				temp1 = "".join([str(i) for i in temp1])
+				temp2 = temp1.split(".insert")
+				self.insert(temp2[0], temp2[1])
+
+			elif ".pop" in temp1[0]:
+				temp1 = "".join([str(i) for i in temp1])
+				temp2 = temp1.split(".pop")
+				self.pop(temp2[0], temp2[1])
+
 			a += 1
 
 	def remove_pipe(self, thisisvariablenumber1):	#input is list
@@ -220,7 +230,7 @@ class algorithm():
 				self.variables[thisisvariablenumber1[1]] = 0
 			elif thisisvariablenumber1[0] == "float":
 				self.variables[thisisvariablenumber1[1]] = 0.0
-			elif thisisvariablenumber1[0] == "char":
+			elif thisisvariablenumber1[0] == "string":
 				self.variables[thisisvariablenumber1[1]] = ""
 			elif thisisvariablenumber1[0] == "boolean":
 				self.variables[thisisvariablenumber1[1]] = False
@@ -383,8 +393,33 @@ class algorithm():
 
 		self.equate(temp, temp1)
 
+	def insert(self, thisisvariablenumber1, thisisvariablenumber2):
+		temp = thisisvariablenumber1
+		objects = thisisvariablenumber2
+		objects = list(objects)
+		objects = "".join([str(i) for i in objects[1:-1]])
+		objects = objects.split(",")
+
+		self.variables[temp].insert(int(objects[0]), eval(objects[1]))
+
+		print self.variables
+
+	def pop(self, thisisvariablenumber1, thisisvariablenumber2):
+		temp = thisisvariablenumber1
+		objects = thisisvariablenumber2
+		objects = list(objects)
+		objects = "".join([str(i) for i in objects[1:-1]])
+
+		self.variables[temp].pop(int(objects))
+
+		print self.variables
+
 x = algorithm()
 x.set_input("""
+
+|string t = []|;
+
+t.insert(0,"HELLO");
 
 int adder ( int d ): #This is a comment :)
 	print ("BYE");
@@ -429,6 +464,8 @@ do:
 while (c > 100);
 
 adder ( 5 );
+
+t.pop(0);
 
 |char TEMP|;
 read (TEMP);
