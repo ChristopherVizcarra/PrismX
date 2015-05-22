@@ -395,10 +395,14 @@ class algorithm():
 				temp2 = temp2[1]
 				temp1[temp2] = arguments[a]
 				
-				if temp3 == "int":
+				if temp1[temp2] in self.variables:
+					temp1[temp2] = self.variables[temp1[temp2]]
+				elif temp3 == "int":
 					temp1[temp2] = int(temp1[temp2])
 				elif temp3 == "float":
 					temp1[temp2] = float(temp1[temp2])
+				elif temp3 == "string":
+					temp1[temp2] = str(temp1[temp2])
 				a += 1
 
 		self.condition += 1
@@ -457,7 +461,9 @@ x.set_input("""
 int adder ( int d ): #This is a comment :)
 	|d+=< 100-10 >|;
 
-adder ( 5 );
+|int x = 5|;
+
+adder ( x );
 
 |int x = t.pop(1)|;
 |int y = t.pop(0)|;
@@ -504,11 +510,9 @@ do:
 	|c -= 1|;
 while (c > 100);
 
-
-
 t.pop(0);
 
 |char TEMP|;
-read (TEMP);
+#read (TEMP);
 
 """)
