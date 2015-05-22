@@ -97,11 +97,10 @@ class algorithm():
 				self.function_declare(temp1, a)
 
 			elif temp1[0] in self.functions:
-				temp1.remove("(")
-				temp1.pop()
-				temp2 = temp1[1:]
-				temp2 = "".join([str(i) for i in temp2])
+				temp2 = list(temp1[1])
+				temp2 = "".join([str(i) for i in temp2[1:-1]])
 				temp2 = temp2.split(",")
+
 				self.run_function(temp1[0], temp2)
 
 			elif temp1[0] == "print":
@@ -200,6 +199,16 @@ class algorithm():
 		return thisisvariablenumber1
 
 	def equate(self, thisisvariablenumber1, thisisvariablenumber2=None, extra=None, data=None):
+		if thisisvariablenumber2 != None:
+			temp1 = list(thisisvariablenumber2)
+			temp2 = []
+			for x in temp1:
+				if x == "<" or x == ">":
+					pass
+				else:
+					temp2.append(x)
+			thisisvariablenumber2 = temp2
+
 		if thisisvariablenumber2 != None:
 			thisisvariablenumber2 = list(thisisvariablenumber2)
 			try:
@@ -456,6 +465,8 @@ class algorithm():
 x = algorithm()
 x.set_input("""
 
+
+|int a = <1 + <2 + 3>>|;
 |int t = [100, 5]|;
 
 int adder ( int d ): #This is a comment :)
@@ -463,7 +474,7 @@ int adder ( int d ): #This is a comment :)
 
 |int x = 5|;
 
-adder ( x );
+adder (x);
 
 |int x = t.pop(1)|;
 |int y = t.pop(0)|;
@@ -512,7 +523,7 @@ while (c > 100);
 
 t.pop(0);
 
-|char TEMP|;
+|string TEMP|;
 #read (TEMP);
 
 """)
